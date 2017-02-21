@@ -7,7 +7,7 @@ import (
   "bytes"
   "strconv"
 )
-func nub(before string, size int) []float64 {
+func nub(before string, after string) string {
 
   var u = 0
   var t = 0
@@ -31,17 +31,44 @@ func nub(before string, size int) []float64 {
     }
     u++
   }
-  return numberTab
+  return "lol"
 }
 
 func  resolution1(before string, after string) string {
-  numberTab := nub(before, 4)
-  resultTab := nub(after, 4)
-  fmt.Printf("%f", numberTab)
-  fmt.Printf("%f", resultTab)
-  return "lol"
+  var i = 0
 
+  splitbefore:= strings.FieldsFunc(before, func(r rune) bool {
+    switch r {
+    case '+', '-':
+      return true
+    }
+    return false
+  })
+  splitAfter:= strings.FieldsFunc(after, func(r rune) bool {
+    switch r {
+    case '+', '-':
+      return true
+    }
+    return false
+  })
+  i = 0
+  for i < len(splitbefore) {
+    var p = 0
+    fmt.Printf("splitStr = %s\n", splitbefore[i])
+    for p < len(splitAfter) {
+      tmpB := strings.Split(splitbefore[i], "")
+      tmpA := strings.Split(splitAfter[p], "")
+      if tmpA[len(tmpA)] == tmpB[len(tmpB)] {
+        nb := nub(splitbefore[i], splitAfter[p]) /*dois return le resulta bien formater*/
+        splitbefore[i] = nb
+      }
+      p++
+    }
+    i++
+  }
+return "lol"
 }
+
 func parcing(str string) {
 
   var i = 0
@@ -62,23 +89,8 @@ func parcing(str string) {
       return
     }
     if  i  <= len(verife) && (verife[i] == "C") { degre2 = true}
+    i++
   }
-
-  splitbefore:= strings.FieldsFunc(splitEqual[0], func(r rune) bool {
-    switch r {
-    case '+', '-':
-      return true
-    }
-    return false
-  })
-  splitAfter:= strings.FieldsFunc(splitEqual[1], func(r rune) bool {
-    switch r {
-    case '+', '-':
-      return true
-    }
-    return false
-  })
-
   if (splitEqual[0] == splitEqual[1]) {
     fmt.Printf(" %s it s not a solube equation.\n", str)
     return
@@ -86,29 +98,18 @@ func parcing(str string) {
 
   if degre2 == true {
     fmt.Printf("Equation de degre 2")
-  } else {
-    fmt.Printf("Equation de degre 1\n")
-    str = resolution1(splitEqual[0], splitEqual[1])
-    fmt.Printf("Resolution: %s\n", str)
+    } else {
+      fmt.Printf("Equation de degre 1\n")
+      str = resolution1(splitEqual[0], splitEqual[1])
+      fmt.Printf("Resolution: %s\n", str)
+    }
   }
 
-  for i < len(splitbefore) {
-    fmt.Printf("splitStr = %s\n", splitbefore[i])
-    i++
-  }
-  i = 0
-  for i < len(splitAfter) {
-    fmt.Printf("splitAfter = %s\n", splitAfter[i])
-    i++
-  }
-}
+  func main () {
+    var i = 2
 
-
-func main () {
-  var i = 2
-
-  if i == len(os.Args) {
-    parcing(os.Args[1])
+    if i == len(os.Args) {
+      parcing(os.Args[1])
+    }
+    return
   }
-  return
-}
