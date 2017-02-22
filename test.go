@@ -10,12 +10,11 @@ import (
 func nub(before string, after string) string {
 
   var u = 0
-  var t = 0
-
+  var nb float64
+  var nb1 float64
   str := strings.Split(before,"")
-  numberTab := make([]float64, size)
 
-  for u < len(str) {
+  for u < len(before) {
 
     if  u - 1 <= 0 || ((str[u] >= "0" && str[u] <= "9") || str[u] == "-" || str[u] == ".") {
 
@@ -25,12 +24,29 @@ func nub(before string, after string) string {
         tmp.WriteString(str[u])
         u++
       }
-      nb, _ := strconv.ParseFloat(tmp.String(), 64)
-      numberTab[t] = nb
-      t++
+      s, _ := strconv.ParseFloat(tmp.String(), 64)
+      nb = s
     }
     u++
   }
+
+  for u < len(after) {
+
+    if  u - 1 <= 0 || ((str[u] >= "0" && str[u] <= "9") || str[u] == "-" || str[u] == ".") {
+
+      var tmp bytes.Buffer
+
+      for u  < len(str) && ((str[u] >= "0" && str[u] <= "9") || str[u]  ==  "-" || str[u] == ".")  {
+        tmp.WriteString(str[u])
+        u++
+      }
+      s, _ := strconv.ParseFloat(tmp.String(), 64)
+      nb1 = s
+    }
+    u++
+  }
+  fmt.Printf("%f \n %f",nb,nb1)
+
   return "lol"
 }
 
@@ -58,7 +74,8 @@ func  resolution1(before string, after string) string {
     for p < len(splitAfter) {
       tmpB := strings.Split(splitbefore[i], "")
       tmpA := strings.Split(splitAfter[p], "")
-      if tmpA[len(tmpA)] == tmpB[len(tmpB)] {
+      fmt.Printf("%s, %s", tmpA, tmpB)
+      if tmpA[len(tmpA) - 1] == tmpB[len(tmpB) - 1] {
         nb := nub(splitbefore[i], splitAfter[p]) /*dois return le resulta bien formater*/
         splitbefore[i] = nb
       }
