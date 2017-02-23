@@ -6,7 +6,9 @@ import (
   "strings"
   "bytes"
   "strconv"
+  "math"
 )
+
 func nub(before string, after string, last string, r bool, div bool) string {
 
   var u = 0
@@ -46,7 +48,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
     }
     u++
   }
-  fmt.Printf("nb=%f \nnb1=%f\n",nb,nb1)
+  //fmt.Printf("nb=%f \nnb1=%f\n",nb,nb1)
   var sum float64
   if div == true {
     sum = nb  / nb1
@@ -70,6 +72,8 @@ func nub(before string, after string, last string, r bool, div bool) string {
       return strings.Join(end, "A")
       } else if last == "B" {
         return strings.Join(end, "B")
+      } else if last == "C" {
+        return strings.Join(end, "C")
       }
       return "NAN"
     }
@@ -84,9 +88,6 @@ func nub(before string, after string, last string, r bool, div bool) string {
         div = false
           tmpB := strings.Split(str[i], "")
           tmpA := strings.Split(str[p], "")
-          if tmpA[len(tmpA) - 1] == "A"  && tmpB[len(tmpB) - 1] == "B" && tmpA[0]=="/" {
-            fmt.Printf("lol,,,,,,,,,,,,,,,")
-          }
           if tmpA[0] == "/" {
             div = true
           }
@@ -132,14 +133,25 @@ func nub(before string, after string, last string, r bool, div bool) string {
           if tmpA[len(tmpA) - 1] == tmpB[len(tmpB) - 1] {
             nb := nub(splitbefore[i], splitAfter[p], tmpB[len(tmpB) - 1], true, false)
             splitbefore[i] = nb
+            splitAfter[p] = "L"
           }
           p++
         }
         i++
       }
-      fmt.Printf("splitStr = %s\n", splitbefore)
+      i = 0
+
+      for i < len(splitAfter) {
+
+        if splitAfter[i] != "L" {
+          splitbefore = append(splitbefore, splitAfter[i])
+        }
+        i++
+      }
+      fmt.Printf("splitbefore = %s \n splitStr = %s\n",  splitAfter, splitbefore)
       return splitbefore
     }
+
 // a changer
     func resolution1(str []string) {
       var i = 0
@@ -162,6 +174,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
         i++
       }
       i = 0
+
       fmt.Printf("Resolution:")
       for  i < len(str) {
         tmpB := strings.Split(str[i], "")
@@ -176,6 +189,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
       }
       i = 0
       fmt.Printf("/")
+
     for  i < len(str) {
       tmpB := strings.Split(str[i], "")
 
@@ -189,6 +203,60 @@ func nub(before string, after string, last string, r bool, div bool) string {
         }
         i++
       }
+    }
+
+    func findNum(toFind string, str []string ) float64  {
+      var i = 0
+      for i < len(str) {
+        tmp := strings.Split(str[i], "")
+        fmt.Printf("%s",tmp)
+        if tmp[len(tmp) - 1] == toFind {
+          var u = 0
+          for u < len(tmp) {
+
+            if  u - 1 <= 0 || ((tmp[u] >= "0" && tmp[u] <= "9") || tmp[u] == "-") {
+
+              var tmp1 bytes.Buffer
+
+              for u  < len(tmp) && ((tmp[u] >= "0" && tmp[u] <= "9") || tmp[u]  ==  "-" || tmp[u] == "." || tmp[u]== " " ||  tmp[u] == "+")  {
+      //          fmt.Printf("ZZZZZ%s",tmp[u])
+                if tmp[u] != " " { tmp1.WriteString(tmp[u]) }
+                u++
+              }
+              s, _ := strconv.ParseFloat(tmp1.String(), 64)
+              return s
+            }
+            u++
+          }
+        }
+        i++
+      }
+      return 1
+
+    }
+    func resolution2(str []string){
+      var a float64 = findNum("C", str)
+      var b float64 = findNum("B",str)
+      var c float64 = findNum("A",str)
+      fmt.Printf("\nA = %f ", a)
+      fmt.Printf("\nB = %f ", b)
+      fmt.Printf("\nC = %f ", c)
+
+      var delta = math.Pow(b, 2) - (4 * a * c)
+      fmt.Printf("\ndelta = %f ", delta)
+      if (delta < 0) {
+        fmt.Printf("\nil n y pas de solution dans R")
+      }
+      if (delta == 0) {
+        var x0 float64 = -(b / (2 * a))
+        fmt.Printf("\nil y a une solution x0 = %f", x0)
+      }
+      if (delta > 0 ) {
+        var x1 float64 = (-b - math.Sqrt(delta)) / (2 * a)
+        var x2 float64 = (-b + math.Sqrt(delta)) / (2 * a)
+        fmt.Printf("\nil y a deux solution x1 = %f et x2 = %f", x1, x2)
+      }
+
     }
 
     func parcing(str string) {
@@ -205,7 +273,6 @@ func nub(before string, after string, last string, r bool, div bool) string {
       str = strings.Replace(str, "X^2","C", -1)
       str = strings.Replace(str, "X^","D", -1)
       verife := strings.Split(str, "")
-
       splitEqual := strings.Split(str,"=")
 
       for i < len(verife) {
@@ -222,7 +289,10 @@ func nub(before string, after string, last string, r bool, div bool) string {
       }
 
       if degre2 == true {
-        fmt.Printf("Equation de degre 2")
+        fmt.Printf("Equation de degre 2\n")
+        str1 := reduction(splitEqual[0], splitEqual[1])
+        fmt.Printf("simplification : %s = 0\n", str1)
+        resolution2(str1)
         } else {
           fmt.Printf("Equation de degre 1\n")
           str1 := reduction(splitEqual[0], splitEqual[1])
