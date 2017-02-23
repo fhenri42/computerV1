@@ -48,7 +48,6 @@ func nub(before string, after string, last string, r bool, div bool) string {
     }
     u++
   }
-  //fmt.Printf("nb=%f \nnb1=%f\n",nb,nb1)
   var sum float64
   if div == true {
     sum = nb  / nb1
@@ -152,7 +151,6 @@ func nub(before string, after string, last string, r bool, div bool) string {
       return splitbefore
     }
 
-// a changer
     func resolution1(str []string) {
       var i = 0
       var p = 0
@@ -161,11 +159,11 @@ func nub(before string, after string, last string, r bool, div bool) string {
         tmpB := strings.Split(str[i], "")
         var u = 0
         for  u < len(tmpB) {
-          if tmpB[u] == "+" {
+          if tmpB[u] == "+"  && tmpB[len(tmpB) - 1] == "A"{
             str[i] = strings.Replace(str[i], "+", "-", -1)
             u++
           }
-          if tmpB[u] == "-" {
+          if tmpB[u] == "-" && tmpB[len(tmpB) - 1] == "A" {
             str[i] = strings.Replace(str[i], "-", "+", -1)
             u++
           }
