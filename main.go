@@ -261,7 +261,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
             var c float64 = findNum("A",str)
 
             var delta = math.Pow(b, 2) - (4 * a * c)
-            fmt.Printf("\ndelta = %f b == %f ", delta, b)
+            fmt.Printf("Δ = %f", delta)
             if (delta < 0) {
               fmt.Printf("\nil n y pas de solution dans R")
             }
@@ -319,14 +319,23 @@ func nub(before string, after string, last string, r bool, div bool) string {
               tmp  = strings.Replace(tmp, "B", "X", -1)
               tmp = strings.Replace(tmp, "A", "", -1)
               tmp  = strings.Replace(tmp, "C", "X^2", -1)
+              tmp  = strings.Replace(tmp, "*-", "-", -1)
+              tmp  = strings.Replace(tmp, "*+", "+", -1)
+
+              tmp  = strings.Replace(tmp, "+", " + ", -1)
+              tmp  = strings.Replace(tmp, "-", " - ", -1)
+
               if degre2 == true {
-                fmt.Printf("Equation de degre 2\n")
-                fmt.Printf("Reduc form: %s = 0\n", tmp)
+                fmt.Printf("-------------------------------------------\n")
+                fmt.Printf("|           Equation de degre 2            |\n")
+                fmt.Printf("-------------------------------------------\n")
+                fmt.Printf("Reduced form: %s = 0\n", tmp)
                 resolution2(str1)
                 } else {
-                  fmt.Printf("Equation de degre 1\n")
-
-                  fmt.Printf("Reduc form: %s = 0\n", tmp)
+                  fmt.Printf("-------------------------------------------\n")
+                  fmt.Printf("|         Equation de degre 1              |\n")
+                  fmt.Printf("-------------------------------------------\n")
+                  fmt.Printf("Reduced form: %s = 0\n", tmp)
                   resolution1(str1)
                 }
                 } else { resolution0(splitEqual[0], splitEqual[1]) }
