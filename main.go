@@ -4,21 +4,16 @@ import (
   "os"
   "fmt"
   "strings"
-  "strconv"
   "bytes"
+  "strconv"
+  "math"
 )
-
-func nub(before string, size int) []float64 {
-
+func getNumber(before string, str []string) float64  {
   var u = 0
-  var t = 0
+  var nb  float64
+  for u < len(before) {
 
-  str := strings.Split(before,"")
-  numberTab := make([]float64, size)
-
-  for u < len(str) {
-
-    if  u - 1 <= 0 || ((str[u] >= "0" && str[u] <= "9" && str[u - 1] != "^") || str[u] == "-" || str[u] == ".") {
+    if   (str[u] >= "0" && str[u] <= "9") || str[u] == "-" {
 
       var tmp bytes.Buffer
 
@@ -26,127 +21,319 @@ func nub(before string, size int) []float64 {
         tmp.WriteString(str[u])
         u++
       }
-      nb, _ := strconv.ParseFloat(tmp.String(), 64)
-      numberTab[t] = nb
-      t++
+      s, _ := strconv.ParseFloat(tmp.String(), 64)
+      nb = s
     }
     u++
   }
-  return numberTab
+  return nb
 }
 
-func simplification(before string, after string) string {
+func nub(before string, after string, last string, r bool, div bool) string {
 
-  var t = 0
-  var b = strings.Split(before, "")
-  var a = strings.Split(after, "")
-  var k = 0
-  var conteur1 = 0
-  var conteur = 0
-  var signe = false
-  numberTab := nub(before, 4)
-  resultTab := nub(after, 4)
+  var nb float64
+  var nb1 float64
+  str := strings.Split(before,"")
+  str1 := strings.Split(after,"")
 
-  for t < len(b) {
-    if (b[t] == "X" && b[t + 1] ==  "^") {
-      k = 0
-      conteur1 = 0
-      for k < len(a) {
-        if a[k] == "X" && a[k + 1] ==  "^" {
-          if t + 2 < len(b) && k + 2 < len(a) && (b[t + 2] == a[k + 2]) {
-            numberTab[conteur] +=  resultTab[conteur1] * - 1
-          }
-          conteur1++
-        }
-        k++
-      }
-      conteur++
-    }
-    t++
-  }
-  t  = 0
-  for t < len(numberTab) {
-   fmt.Printf("%f\n",numberTab[t])
-   t++
- }
-  t = 0
-  conteur = 0
-  for t < len(b)  {
-    signe = false
-    if  t - 1 <= 0 || ((b[t] >= "0" && b[t] <= "9" && b[t - 1] != "^") || b[t] == "-" || b[t] == ".") {
-      var tmp bytes.Buffer
+  nb = getNumber(before, str)
+  nb1 = getNumber(after, str1)
 
-      if b[t] == "-"  { signe = true }
-      for t  < len(b) && ((b[t] >= "0" && b[t] <= "9") || b[t]  ==  "-" || b[t] == ".")  {
-        tmp.WriteString(b[t])
-        t++
-      }
-
-      nb := strconv.FormatFloat(numberTab[conteur], 'f', -1, 64)
-
-      if signe == true && numberTab[conteur] >= 0 {
-        s := []string{"+", ""}
-        nb = strings.Join(s,nb)
-      }
-      before = strings.Replace(before, tmp.String(), nb, -1)
-      conteur++
-    }
-    t++
-  }
-  return before
-}
-
-func parcing(str string) {
-
-  var i = 0
-  var degre2 = false
-  str = strings.Replace(str, " ", "", -1)
-  verife := strings.Split(str, "")
-  splitEqual := strings.Split(str,"=")
-
-    if (splitEqual[0] == splitEqual[1]) {
-      fmt.Printf(" %s it s not a solube equation.\n", str)
-      return
-    }
-    for i < len(verife) {
-      if  i + 2 <= len(verife) && (verife[i] == "^" && (verife[i + 1] >= "3" && verife [i + 1] <= "9")) {
-        fmt.Printf(" %s it s not a solube equation.\n", str)
-        return
-      }
-      if i + 2 < len(verife) && (verife[i] == "^" && (verife[i + 1] >= "1" && verife [i + 1] <= "9" && verife[i + 2] >= "0" && verife[i + 2] <= "9")) {
-        fmt.Printf(" %s it s not a solube equation.\n", str)
-        return
-      }
-      if  i + 1 <= len(verife) && (verife[i] == "^" && (verife[i + 1] == "2")) {
-        degre2 = true
-      }
-
-      i++
-    }
-    if  splitEqual[1] != "0" && degre2 == true  {
-      fmt.Printf("Not reduce forme: %s\n", str)
-      str = simplification(splitEqual[0],splitEqual[1])
-      fmt.Printf("Reduce forme: %s = 0\n", str)
+  var sum float64
+  if div == true {
+    sum = nb  / nb1
     } else {
-      fmt.Printf("Reduce forme: %s\n", str)
-  }
-  if degre2 == true {
-    fmt.Printf("Equation de degre 2")
-  } else {
-    fmt.Printf("Equation de degre 1\n")
-  //  str = resolution1(splitEqual[0], splitEqual[1])
-    fmt.Printf("Resolution: %s\n", str)
-  }
+      if r == true  {
+        sum = nb + (nb1 * -1)
+        } else {
+          sum = nb + nb1
+        }
+      }
 
+      sumString := strconv.FormatFloat(sum, 'f', -1, 64)
 
-}
+      if sum >= 0 {
+        s := []string{"+", ""}
+        sumString = strings.Join(s,sumString)
+      }
+      end := []string{sumString, ""}
 
+      if last == "A"  {
+        return strings.Join(end, "A")
+        } else if last == "B" {
+          return strings.Join(end, "B")
+          } else if last == "C" {
+            return strings.Join(end, "C")
+          }
+          return "NAN"
+        }
 
-func main () {
-  var i = 2
+        func  reduc(str []string) []string  {
+          var i = 0
+          var div = false
+          for i < len(str) {
+            var p = i + 1
+            for p < len(str) {
+              div = false
+              tmpB := strings.Split(str[i], "")
+              tmpA := strings.Split(str[p], "")
+              if tmpA[0] == "/" {
+                div = true
+              }
+              if tmpA[len(tmpA) - 1] == tmpB[len(tmpB) - 1] {
+                nb := nub(str[i], str[p], tmpB[len(tmpB) - 1], false, div)
+                str[i] = nb
+                str[p] = "0"
+              }
+              p++
+            }
+            i++
+          }
+          return str
+        }
 
-  if i == len(os.Args) {
-    parcing(os.Args[1])
-  }
-  return
-}
+        func splitOnSigne(str string) []string {
+          tmp := strings.FieldsFunc(str, func(r rune) bool {
+            switch r  {
+            case '_':
+              return true
+            }
+            return false
+          })
+          return tmp
+        }
+
+        func  reduction(before string, after string) []string {
+          var i = 0
+
+          splitBefore := splitOnSigne(before)
+          splitAfter:= splitOnSigne(after)
+
+          splitBefore = reduc(splitBefore)
+          splitAfter = reduc(splitAfter)
+
+          for i < len(splitBefore) {
+            var p = 0
+            for p < len(splitAfter) {
+              tmpB := strings.Split(splitBefore[i], "")
+              tmpA := strings.Split(splitAfter[p], "")
+              if tmpA[len(tmpA) - 1] == tmpB[len(tmpB) - 1] {
+                nb := nub(splitBefore[i], splitAfter[p], tmpB[len(tmpB) - 1], true, false)
+                splitBefore[i] = nb
+                splitAfter[p] = "L"
+              }
+              p++
+            }
+            i++
+          }
+          i = 0
+
+          for i < len(splitAfter) {
+
+            if splitAfter[i] != "L" {
+              splitBefore = append(splitBefore, splitAfter[i])
+            }
+            i++
+          }
+          return splitBefore
+        }
+
+        func getResult(str []string) float64  {
+          var u = 0
+          var t = 0
+
+          var nb  float64 = 0
+          for u < len(str) {
+            t = 0
+            var strTmp = strings.Split(str[u], "")
+            for t < len(strTmp) {
+            if ( strTmp[t] >= "0" && strTmp[t] <= "9") || strTmp[t] == "-"  {
+              var tmp bytes.Buffer
+
+              for u  < len(strTmp) && ((strTmp[t] >= "0" && strTmp[t] <= "9") || strTmp[t]  ==  "-" || strTmp[t] == ".")  {
+                tmp.WriteString(strTmp[t])
+                t++
+              }
+              s, _ := strconv.ParseFloat(tmp.String(), 64)
+              nb = s + nb
+            }
+            t++
+          }
+            u++
+          }
+          return nb
+        }
+
+        func resolution0(str string, str1 string)  {
+          splitBefore := splitOnSigne(str)
+          splitAfter:= splitOnSigne(str1)
+
+          if getResult(reduc(splitBefore)) != getResult(reduc(splitAfter)) {
+            fmt.Printf("False")
+            } else {
+              fmt.Printf("Right")
+            }
+          }
+
+          func resolution1(str []string) {
+            var i = 0
+            var p = 0
+
+            for i < len(str) {
+              tmpB := strings.Split(str[i], "")
+              var u = 0
+              for  u < len(tmpB) {
+                if tmpB[u] == "+"  && tmpB[len(tmpB) - 1] == "A"{
+                  str[i] = strings.Replace(str[i], "+", "-", -1)
+                  u++
+                }
+                if tmpB[u] == "-" && tmpB[len(tmpB) - 1] == "A" {
+                  str[i] = strings.Replace(str[i], "-", "+", -1)
+                  u++
+                }
+                u++
+              }
+              i++
+            }
+            i = 0
+
+            fmt.Printf("Resolution:")
+            for  i < len(str) {
+              tmpB := strings.Split(str[i], "")
+              if tmpB[len(tmpB) - 1] == "A" {
+                p = 0
+                for p < len(tmpB) - 1 {
+                  fmt.Printf("%s",tmpB[p])
+                  p++
+                }
+              }
+              i++
+            }
+            i = 0
+            fmt.Printf("/")
+
+            for  i < len(str) {
+              tmpB := strings.Split(str[i], "")
+
+              if tmpB[len(tmpB) - 1] == "B" {
+                p = 0
+                for p  < len(tmpB) - 1 {
+                  fmt.Printf("%s",tmpB[p])
+                  p++
+                }
+                fmt.Printf(" = X ")
+              }
+              i++
+            }
+          }
+
+          func findNum(toFind string, str []string ) float64  {
+            var i = 0
+            for i < len(str) {
+              tmp := strings.Split(str[i], "")
+              if tmp[len(tmp) - 1] == toFind {
+                var u = 0
+                for u < len(tmp) {
+
+                  if  u - 1 <= 0 || ((tmp[u] >= "0" && tmp[u] <= "9") || tmp[u] == "-") {
+
+                    var tmp1 bytes.Buffer
+
+                    for u  < len(tmp) && ((tmp[u] >= "0" && tmp[u] <= "9") || tmp[u]  ==  "-" || tmp[u] == "." || tmp[u]== " " ||  tmp[u] == "+")  {
+                      if tmp[u] != " " { tmp1.WriteString(tmp[u]) }
+                      u++
+                    }
+                    s, _ := strconv.ParseFloat(tmp1.String(), 64)
+                    return s
+                  }
+                  u++
+                }
+              }
+              i++
+            }
+            return 0
+          }
+
+          func resolution2(str []string){
+
+            var a float64 = findNum("C", str)
+            var b float64 = findNum("B",str)
+            var c float64 = findNum("A",str)
+
+            var delta = math.Pow(b, 2) - (4 * a * c)
+            fmt.Printf("\ndelta = %f b == %f ", delta, b)
+            if (delta < 0) {
+              fmt.Printf("\nil n y pas de solution dans R")
+            }
+            if (delta == 0) {
+              var x0 float64 = -(b / (2 * a))
+              fmt.Printf("\nil y a une solution x0 = %f", x0)
+            }
+            if (delta > 0 ) {
+              var x1 float64 = (-b - math.Sqrt(delta)) / (2 * a)
+              var x2 float64 = (-b + math.Sqrt(delta)) / (2 * a)
+              fmt.Printf("\nil y a deux solution x1 = %f et x2 = %f", x1, x2)
+            }
+
+          }
+
+          func parcing(str string) {
+
+            var i = 0
+            var degre1 = false
+            var degre2 = false
+
+            str = strings.Replace(str, " ", "", -1)
+            str = strings.Replace(str, "-", "_-", -1)
+            str = strings.Replace(str, "+", "_+", -1)
+            str = strings.Replace(str,"/", "_/", -1)
+            str = strings.Replace(str, "X^0","A", -1)
+            str = strings.Replace(str, "X^1","B", -1)
+            str = strings.Replace(str, "X^2","C", -1)
+            str = strings.Replace(str, "X^","D", -1)
+            verife := strings.Split(str, "")
+            splitEqual := strings.Split(str,"=")
+
+            for i < len(verife) {
+              if  i  <= len(verife) && (verife[i] == "D") {
+                fmt.Printf(" %s it s not a solube equation.\n", str)
+                return
+              }
+              if i <= len(verife) && (verife[i] == "B") { degre1 = true}
+              if  i  <= len(verife) && (verife[i] == "C") { degre2 = true}
+              i++
+            }
+            if (splitEqual[0] == splitEqual[1]) {
+              fmt.Printf(" %s it s not a solube equation.\n", str)
+              return
+            }
+
+            if degre1 == true || degre2 == true {
+
+              str1 := reduction(splitEqual[0], splitEqual[1])
+              tmp  := strings.Join(str1, "")
+              tmp = strings.Replace(tmp,"NAN", "", -1)
+              tmp  = strings.Replace(tmp, "B0", "X", -1)
+              tmp  = strings.Replace(tmp, "C0", "X^2", -1)
+              tmp = strings.Replace(tmp, "A0", "", -1)
+              tmp  = strings.Replace(tmp, "B", "X", -1)
+              tmp = strings.Replace(tmp, "A", "", -1)
+              tmp  = strings.Replace(tmp, "C", "X^2", -1)
+              if degre2 == true {
+                fmt.Printf("Equation de degre 2\n")
+                fmt.Printf("Reduc form: %s = 0\n", tmp)
+                resolution2(str1)
+                } else {
+                  fmt.Printf("Equation de degre 1\n")
+
+                  fmt.Printf("Reduc form: %s = 0\n", tmp)
+                  resolution1(str1)
+                }
+                } else { resolution0(splitEqual[0], splitEqual[1]) }
+              }
+
+              func main () {
+
+                if 2 == len(os.Args) { parcing(os.Args[1]) }
+                return
+              }
