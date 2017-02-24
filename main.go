@@ -131,7 +131,14 @@ func nub(before string, after string, last string, r bool, div bool) string {
           for i < len(splitAfter) {
 
             if splitAfter[i] != "L" {
-              splitBefore = append(splitBefore, splitAfter[i])
+              tmp := strings.Split(splitAfter[i], "")
+              if tmp[0] == "-" {
+                tmp[0] = "+"
+                splitAfter[i] = strings.Join(tmp, "")
+                splitBefore = append(splitBefore, splitAfter[i])
+                } else {
+                splitBefore = append(splitBefore, strings.Join([]string{"-",""}, splitAfter[i]))
+                }
             }
             i++
           }
@@ -169,9 +176,9 @@ func nub(before string, after string, last string, r bool, div bool) string {
           splitAfter:= splitOnSigne(str1)
 
           if getResult(reduc(splitBefore)) != getResult(reduc(splitAfter)) {
-            fmt.Printf("False")
+            fmt.Printf("there is no solution")
             } else {
-              fmt.Printf("Right")
+              fmt.Printf("All numbers are solution")
             }
           }
 
@@ -296,7 +303,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
 
             for i < len(verife) {
               if  i  <= len(verife) && (verife[i] == "D") {
-                fmt.Printf(" %s it s not a solube equation.\n", str)
+                fmt.Printf("Soory we only do bellow or equal too second degre equations.\n")
                 return
               }
               if i <= len(verife) && (verife[i] == "B") { degre1 = true}
@@ -304,7 +311,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
               i++
             }
             if (splitEqual[0] == splitEqual[1]) {
-              fmt.Printf(" %s it s not a solube equation.\n", str)
+              fmt.Printf("All numbers are solution\n")
               return
             }
 
