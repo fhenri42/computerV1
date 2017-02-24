@@ -131,14 +131,17 @@ func nub(before string, after string, last string, r bool, div bool) string {
           for i < len(splitAfter) {
 
             if splitAfter[i] != "L" {
-              tmp := strings.Split(splitAfter[i], "")
+             tmp := strings.Split(splitAfter[i], "")
               if tmp[0] == "-" {
                 tmp[0] = "+"
                 splitAfter[i] = strings.Join(tmp, "")
                 splitBefore = append(splitBefore, splitAfter[i])
-                } else {
-                splitBefore = append(splitBefore, strings.Join([]string{"-",""}, splitAfter[i]))
                 }
+                if tmp[0] == "+" {
+                  tmp[0] = "-"
+                  splitAfter[i] = strings.Join(tmp, "")
+                  splitBefore = append(splitBefore, splitAfter[i])
+                  }
             }
             i++
           }
@@ -176,9 +179,9 @@ func nub(before string, after string, last string, r bool, div bool) string {
           splitAfter:= splitOnSigne(str1)
 
           if getResult(reduc(splitBefore)) != getResult(reduc(splitAfter)) {
-            fmt.Printf("there is no solution")
+            fmt.Printf("There is no solution :(")
             } else {
-              fmt.Printf("All numbers are solution")
+              fmt.Printf("All numbers are solutions :)")
             }
           }
 
@@ -210,7 +213,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
               if tmpB[len(tmpB) - 1] == "A" {
                 p = 0
                 for p < len(tmpB) - 1 {
-                  fmt.Printf("%s",tmpB[p])
+                  if (tmpB[p] >= "0" && tmpB[p] <= "9") || tmpB[p] == "-" || tmpB[p] == "." { fmt.Printf("%s",tmpB[p]) }
                   p++
                 }
               }
@@ -225,7 +228,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
               if tmpB[len(tmpB) - 1] == "B" {
                 p = 0
                 for p  < len(tmpB) - 1 {
-                  fmt.Printf("%s",tmpB[p])
+                  if (tmpB[p] >= "0" && tmpB[p] <= "9") || tmpB[p] == "-" || tmpB[p] == "." { fmt.Printf("%s",tmpB[p]) }
                   p++
                 }
                 fmt.Printf(" = X ")
@@ -267,19 +270,28 @@ func nub(before string, after string, last string, r bool, div bool) string {
             var b float64 = findNum("B",str)
             var c float64 = findNum("A",str)
 
+
             var delta = math.Pow(b, 2) - (4 * a * c)
+            if a == 0 {
+              fmt.Printf("\nAfter reduction we have an:\n")
+              fmt.Printf("-------------------------------------------\n")
+              fmt.Printf("|      Equation of 1st degreee              |\n")
+              fmt.Printf("-------------------------------------------\n")
+              resolution1(str)
+              return
+            }
             fmt.Printf("Δ = %f", delta)
             if (delta < 0) {
-              fmt.Printf("\nil n y pas de solution dans R")
+              fmt.Printf("\nNo solutions in R")
             }
             if (delta == 0) {
               var x0 float64 = -(b / (2 * a))
-              fmt.Printf("\nil y a une solution x0 = %f", x0)
+              fmt.Printf("\nThere is one solution x0 = %f", x0)
             }
             if (delta > 0 ) {
               var x1 float64 = (-b - math.Sqrt(delta)) / (2 * a)
               var x2 float64 = (-b + math.Sqrt(delta)) / (2 * a)
-              fmt.Printf("\nil y a deux solution x1 = %f et x2 = %f", x1, x2)
+              fmt.Printf("\nThere is two solutions x1 = %f and x2 = %f", x1, x2)
             }
 
           }
@@ -287,8 +299,8 @@ func nub(before string, after string, last string, r bool, div bool) string {
           func parcing(str string) {
 
             var i = 0
-            var degre1 = false
-            var degre2 = false
+            var degree1 = false
+            var degree2 = false
 
             str = strings.Replace(str, " ", "", -1)
             str = strings.Replace(str, "-", "_-", -1)
@@ -303,11 +315,11 @@ func nub(before string, after string, last string, r bool, div bool) string {
 
             for i < len(verife) {
               if  i  <= len(verife) && (verife[i] == "D") {
-                fmt.Printf("Soory we only do bellow or equal too second degre equations.\n")
+                fmt.Printf("Sorry we only do bellow or equal to second degreee equations.\n")
                 return
               }
-              if i <= len(verife) && (verife[i] == "B") { degre1 = true}
-              if  i  <= len(verife) && (verife[i] == "C") { degre2 = true}
+              if i <= len(verife) && (verife[i] == "B") { degree1 = true}
+              if  i  <= len(verife) && (verife[i] == "C") { degree2 = true}
               i++
             }
             if (splitEqual[0] == splitEqual[1]) {
@@ -315,7 +327,7 @@ func nub(before string, after string, last string, r bool, div bool) string {
               return
             }
 
-            if degre1 == true || degre2 == true {
+            if degree1 == true || degree2 == true {
 
               str1 := reduction(splitEqual[0], splitEqual[1])
               tmp  := strings.Join(str1, "")
@@ -328,19 +340,19 @@ func nub(before string, after string, last string, r bool, div bool) string {
               tmp  = strings.Replace(tmp, "C", "X^2", -1)
               tmp  = strings.Replace(tmp, "*-", "-", -1)
               tmp  = strings.Replace(tmp, "*+", "+", -1)
-
+              tmp  = strings.Replace(tmp, "*", "", -1)
               tmp  = strings.Replace(tmp, "+", " + ", -1)
               tmp  = strings.Replace(tmp, "-", " - ", -1)
 
-              if degre2 == true {
+              if degree2 == true {
                 fmt.Printf("-------------------------------------------\n")
-                fmt.Printf("|           Equation de degre 2            |\n")
+                fmt.Printf("|           Equation of 2nd degreee         |\n")
                 fmt.Printf("-------------------------------------------\n")
                 fmt.Printf("Reduced form: %s = 0\n", tmp)
                 resolution2(str1)
                 } else {
                   fmt.Printf("-------------------------------------------\n")
-                  fmt.Printf("|         Equation de degre 1              |\n")
+                  fmt.Printf("|         Equation of 1st degreee          |\n")
                   fmt.Printf("-------------------------------------------\n")
                   fmt.Printf("Reduced form: %s = 0\n", tmp)
                   resolution1(str1)
