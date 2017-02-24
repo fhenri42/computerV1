@@ -11,3 +11,7 @@ git clone https://github.com/fhenri42/computerV1 && cd computerV1
 go build main.go
 ./main "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
 ```
+## Author
+
+Henri Floren
+fhenri@student.42.fr
